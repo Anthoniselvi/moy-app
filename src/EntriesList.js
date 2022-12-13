@@ -1,11 +1,29 @@
 import React, { useState, useEffect } from "react";
-
+import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-const getDatafromEvent = () => {
+// const getDatafromEvent = () => {
+//   const data = localStorage.getItem("eventsList");
+//   if (data) {
+//     return JSON.parse(data);
+//   } else {
+//     return [];
+//   }
+// };
+// const getEntryData = () => {
+//   const data = localStorage.getItem("entries");
+//   if (data) {
+//     return JSON.parse(data);
+//   } else {
+//     return [];
+//   }
+// };
+const getDatafromEvent = (eventId) => {
   const data = localStorage.getItem("eventsList");
   if (data) {
-    return JSON.parse(data);
+    return JSON.parse(data).filter((event) => {
+      return parseInt(event.id) === parseInt(eventId);
+    });
   } else {
     return [];
   }
@@ -13,9 +31,10 @@ const getDatafromEvent = () => {
 
 const getDatafromEntry = (eventId) => {
   const data = localStorage.getItem("entries");
+  console.log("from data", data);
   if (data) {
     return JSON.parse(data).filter((entry) => {
-      return entry.eventId === eventId;
+      return parseInt(entry.eventId) === parseInt(eventId);
     });
   } else {
     return [];
@@ -24,9 +43,11 @@ const getDatafromEntry = (eventId) => {
 
 export default function EntriesList() {
   const navigate = useNavigate();
+  const [searchParam] = useSearchParams();
+  const eventId = searchParam.get("event");
 
-  const [entries, setEntries] = useState(getDatafromEntry());
-  const [eventsList, setEventsList] = useState(getDatafromEvent());
+  const [eventsList, setEventsList] = useState(getDatafromEvent(eventId));
+  const [entries, setEntries] = useState(getDatafromEntry(eventId));
 
   const totalAmount = entries
     .map((entry) => entry.amount)
@@ -38,12 +59,12 @@ export default function EntriesList() {
     .reduce((acc, value) => acc + +value, 0);
   console.log(totalGift);
 
-  useEffect(() => {
-    localStorage.setItem("entries", JSON.stringify(entries));
-  }, [entries]);
+  // useEffect(() => {
+  //   localStorage.setItem("entries", JSON.stringify(entries));
+  // }, [entries]);
 
   const navigateToEntryForm = () => {
-    navigate("/entry/new");
+    navigate(`/entry/new?event=${eventId}`);
   };
   return (
     <div>

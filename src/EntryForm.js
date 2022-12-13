@@ -1,55 +1,58 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-const getDatafromEntry = () => {
-  const data = localStorage.getItem("entries");
-  if (data) {
-    return JSON.parse(data);
-  } else {
-    return [];
-  }
-};
-// const getDatafromEntry = (eventId) => {
+// const getDatafromEntry = () => {
 //   const data = localStorage.getItem("entries");
 //   if (data) {
-//     return JSON.parse(data).filter((entry) => {
-//       return entry.eventId === eventId;
-//     });
+//     return JSON.parse(data);
 //   } else {
 //     return [];
 //   }
 // };
+const getDatafromEntry = (eventId) => {
+  const data = localStorage.getItem("entries");
+  console.log("getdataentry:" + data);
+  if (data) {
+    return JSON.parse(data).filter((entry) => {
+      return parseInt(entry.eventId) === parseInt(eventId);
+    });
+  } else {
+    return [];
+  }
+};
 
 export default function EntryForm() {
   const navigate = useNavigate();
   const [searchParam] = useSearchParams();
   const eventId = searchParam.get("event");
 
-  const [entries, setEntries] = useState(getDatafromEntry());
+  const [entries, setEntries] = useState(getDatafromEntry(eventId));
   const [personName, setPersonName] = useState("");
   const [city, setCity] = useState("");
   const [amount, setAmount] = useState(0);
   const [gift, setGift] = useState(0);
 
   const handleSubmitEvent = (e) => {
-    console.log(entries);
+    console.log("handlesubmit entries:" + entries);
+    console.log(eventId);
     e.preventDefault();
     let entry = {
-      id: eventId,
+      id: entries.length + 1,
       personName,
       city,
       amount,
       gift,
+      eventId,
     };
 
     setPersonName("");
     setCity("");
     setAmount("");
     setGift("");
-
+    console.log("entries:" + entries, "entry:" + entry);
     localStorage.setItem("entries", JSON.stringify([...entries, entry]));
-    navigate("/entrylist");
-    // navigate(`/entryList?event=${id}`);
+    // navigate("/entrylist");
+    navigate(`/entryList?event=${eventId}`);
   };
 
   return (
