@@ -11,6 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/">
+            <Route index element={<EventsList />} />
             <Route path="eventslist" element={<EventsList />} />
             <Route path="event/new" element={<EventForm />} />
             <Route path="entrylist" element={<EntriesList />} />

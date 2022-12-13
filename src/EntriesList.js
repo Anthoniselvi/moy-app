@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+
 import { useNavigate } from "react-router-dom";
+
+const getDatafromEvent = () => {
+  const data = localStorage.getItem("eventsList");
+  if (data) {
+    return JSON.parse(data);
+  } else {
+    return [];
+  }
+};
 
 const getDatafromEntry = (eventId) => {
   const data = localStorage.getItem("entries");
@@ -13,11 +22,11 @@ const getDatafromEntry = (eventId) => {
   }
 };
 
-export default function EntriesList(entry) {
+export default function EntriesList() {
   const navigate = useNavigate();
-  const [searchParam] = useSearchParams();
-  const eventId = searchParam.get("event");
-  const [entries, setEntries] = useState(getDatafromEntry(eventId));
+
+  const [entries, setEntries] = useState(getDatafromEntry());
+  const [eventsList, setEventsList] = useState(getDatafromEvent());
 
   const totalAmount = entries
     .map((entry) => entry.amount)
@@ -38,14 +47,16 @@ export default function EntriesList(entry) {
   };
   return (
     <div>
-      <h1> Entry List</h1>
+      {/* <h1> Entry List</h1> */}
       <div className="entry_content">
         {entries.length > 0 && (
           <>
             <div className="entry-inner-box">
               {/* onClick={moveToEntry} */}
               <div className="entry_head_name">
-                <h1 className="entry-title">Entry List</h1>
+                {eventsList.map((eventId) => (
+                  <h1 className="entry-title">{eventId.name}</h1>
+                ))}
                 <table className="entry-table">
                   <tr>
                     <th>Person Name</th>
@@ -59,11 +70,13 @@ export default function EntriesList(entry) {
                       <td>{entry.gift}</td>
                     </tr>
                   ))}
-                  <tr className="total-entry">
-                    <td>Total</td>
-                    <td>{totalAmount}</td>
-                    <td>{totalGift}</td>
-                  </tr>
+                  {eventsList.map((event) => (
+                    <tr className="total-entry">
+                      <td>Total</td>
+                      <td>{totalAmount}</td>
+                      <td>{totalGift}</td>
+                    </tr>
+                  ))}
                 </table>
               </div>
             </div>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useSearchParams } from "react-router-dom";
 const getDatafromEntry = () => {
   const data = localStorage.getItem("entries");
   if (data) {
@@ -9,8 +9,22 @@ const getDatafromEntry = () => {
     return [];
   }
 };
+// const getDatafromEntry = (eventId) => {
+//   const data = localStorage.getItem("entries");
+//   if (data) {
+//     return JSON.parse(data).filter((entry) => {
+//       return entry.eventId === eventId;
+//     });
+//   } else {
+//     return [];
+//   }
+// };
+
 export default function EntryForm() {
   const navigate = useNavigate();
+  const [searchParam] = useSearchParams();
+  const eventId = searchParam.get("event");
+
   const [entries, setEntries] = useState(getDatafromEntry());
   const [personName, setPersonName] = useState("");
   const [city, setCity] = useState("");
@@ -18,22 +32,26 @@ export default function EntryForm() {
   const [gift, setGift] = useState(0);
 
   const handleSubmitEvent = (e) => {
-    console.log();
+    console.log(entries);
     e.preventDefault();
     let entry = {
+      id: eventId,
       personName,
       city,
       amount,
       gift,
     };
-    setEntries([...entries, entry]);
+
     setPersonName("");
     setCity("");
     setAmount("");
     setGift("");
+
     localStorage.setItem("entries", JSON.stringify([...entries, entry]));
     navigate("/entrylist");
+    // navigate(`/entryList?event=${id}`);
   };
+
   return (
     <div>
       Add New Entry
