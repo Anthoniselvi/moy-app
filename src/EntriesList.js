@@ -2,22 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-// const getDatafromEvent = () => {
-//   const data = localStorage.getItem("eventsList");
-//   if (data) {
-//     return JSON.parse(data);
-//   } else {
-//     return [];
-//   }
-// };
-// const getEntryData = () => {
-//   const data = localStorage.getItem("entries");
-//   if (data) {
-//     return JSON.parse(data);
-//   } else {
-//     return [];
-//   }
-// };
 const getDatafromEvent = (eventId) => {
   const data = localStorage.getItem("eventsList");
   if (data) {
